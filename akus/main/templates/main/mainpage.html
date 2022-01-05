@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mainpage</title>
+<style>
+
+    .buttons{
+    display: inline;
+    color:#4169E1;
+    margin: 0;
+    margin-right: 5px;
+    }
+
+    ul.buttons {
+    margin: 0;
+    padding: 4px;
+   }
+
+   ul.buttons li {
+    display: inline;
+    margin-right: 50px;
+    padding: 3px;
+   }
+
+</style>
+
+
+</head>
+<body id="bg" style="background-image: url('{% static "main/images/maincolor.jpg" %}')">
+
+<ul class="buttons">
+    <li ><font size="8">Profile</font></li>
+    <li ><font size="8">—</font></li>
+    <li><font size="8">Manage Bands</font></li>
+    <li><font size="8">—</font></li>
+    <li><font size="4">Logout</font></li>
+
+</ul>
+
+</body>
+</html>

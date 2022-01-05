@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+    .cells{
+    display: inline;
+    margin-right: 50px;
+    padding: 3px;
+    color:#4169E1;
+     font-family: 'Times New Roman', Times, serif;
+    font-size: 250%;
+    }
+</style>
+</head>
+
+<body id="bg" style="background-image: url('{% static "main/images/LOGIN.jpg" %}')">
+
+<div align="center">
+    <br>
+    <br>
+    <br>
+    <br>
+    <form class="cells" method="post">
+       {% csrf_token %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">LOG</button>
+</form>
+
+
+</body>
+</html>
