@@ -4,40 +4,179 @@
 <head>
     <meta charset="UTF-8">
     <title>Mainpage</title>
-<style>
 
-    .buttons{
-    display: inline;
-    color:#4169E1;
-    margin: 0;
-    margin-right: 5px;
-    }
+    <style>
+        body{
 
-    ul.buttons {
-    margin: 0;
-    padding: 4px;
-   }
+background-image: url('{% static "main/images/dad.jpg" %}')
+        }
+        .buttons{
+            display: inline;
+            color:#4169E1;
+            margin: 0;
+            margin-right: 5px;
+        }
 
-   ul.buttons li {
-    display: inline;
-    margin-right: 50px;
-    padding: 3px;
-   }
+        nav.buttons {
+            margin: 0;
+            padding: 4px;
+        }
 
-</style>
+        nav.buttons a {
+            display: inline;
+            margin-right: 50px;
+            padding: 3px;
+        }
+        main{
+            display: flex;
+            justify-content: space-around;
+            margin-top: 200px;
 
+        }
+        .card{
+            border: 2px solid teal;
+            border-color: rgba(65, 105, 225, 1);
+            font: 20pt monospace;
+            width: 2px;
+            padding: 40px;
+            display: none;
+            background-image: url('{% static "main/images/dad2.jpg" %}')
+        }
+        .active{
+            width: 450px;
+            height: 450px;
+            display: block;
 
+        }
+        .arrow {
+            position: absolute;
+            height: 800px;
+            top: 0px;
+            width: 60px;
+            padding-top: 390px;
+            font-size: 45px;
+
+        }
+        .prev{
+            left: 520px;
+
+        }
+        .next{
+            left: 1266px;
+        }
+        .card .title{
+            font-size: 50px;
+            font: 20pt monospace;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 1);
+
+        }
+        .card .vacancion{
+            font-size: 30px;
+            box-shadow: 0 0 10px rgba(69, 37, 247, 1);
+        }
+        .card >a{
+            display: block;
+            font: 20pt monospace;
+            font-size: 20px;
+            bottom: 0px;
+            position: relative;
+            left: 142px;
+            background-color: rgba(201, 239, 255, 1);
+            top: 195px;
+            width: 165px;
+            padding: 11px;
+            border: 1px teal solid;
+            box-shadow: 0 0 10px rgba(69, 37, 247, 1);
+        }
+        .goaway{
+            animation: goaway 0.5s forwards;
+            animation-duration: 0.5s;
+        }
+        .appear{
+            animation: goaway 0.5s reverse;
+            animation-duration: 0.5s;
+        }
+        @keyframes goaway {
+            from {transform: scaleX(1);}
+            to {transform: scaleX(0);}
+        }
+
+    </style>
 </head>
-<body id="bg" style="background-image: url('{% static "main/images/maincolor.jpg" %}')">
+<body id="bg">
 
-<ul class="buttons">
-    <li ><font size="8">Profile</font></li>
-    <li ><font size="8">—</font></li>
-    <li><font size="8">Manage Bands</font></li>
-    <li><font size="8">—</font></li>
-    <li><font size="4">Logout</font></li>
+    <nav class="buttons">
+        <a href="{% url "main" %}"><font size="8" face="verdana">Profile</font></a>
+        <a><font size="8">—</font></a>
+        <a href="{% url 'manage_bands' %}"><font size="8" face="verdana">Manage Bands</font></a>
+        <a><font size="8" >—</font></a>
+        <a href="{% url 'manage_skills' %}"><font size="8" face="verdana">Manage Skills</font></a>
+        <a><font size="8">—</font></a>
+        <a href="{% url 'logout' %}"><font size="8" face="verdana">Logout</font></a>
+    </nav>
 
-</ul>
+<main>
+    {% if max_card_idx != 0 %}
+    <div class="arrow prev" id="arrow_prev"><</div>
+    {% endif %}
+    {% for bv in applicable_band_vacations %}
+    <div class="card {% if bv.card_idx == 0 %}active{% endif %}" id="card{{ bv.card_idx }}">
+        <div class="title">{{ bv.band.name }}</div>
+        <div class="about">{% if bv.band.about %}{{ bv.band.about }}{% endif %}</div>
+        <div class="vacancion">{{ bv.instrument.name }}</div>
+        <a href="{% url 'update_band_get' bv.id %}" class="button"><font face="monospace">Присоединиться</font></a>
+    </div>
+    {% endfor %}
+    {% if max_card_idx != 0 %}
+    <div class="arrow next" id="arrow_next">></div>
+    {% endif %}
+</main>
 
+<script>
+    cards_max_idx = {{ max_card_idx }};
+    document.addEventListener("DOMContentLoaded", function (event) {
+        let arrow_prev = document.getElementById("arrow_prev");
+        let arrow_next = document.getElementById("arrow_next");
+        arrow_prev.addEventListener("click", function (e) {
+            let active_card = document.getElementsByClassName("active")[0];
+            let idx = parseInt(active_card.id.substring(4));
+            let next_card_idx = idx-1<0? cards_max_idx: idx-1;
+            let next_card = document.getElementById(`card${next_card_idx}`);
+
+            active_card.className += ' goaway';
+            setTimeout(function () {
+                active_card.classList.remove('active');
+                active_card.classList.remove('goaway');
+                next_card.className += ' appear active';
+                setTimeout(function () {
+                    next_card.classList.remove('appear');
+                }, 2000);
+            }, 2000);
+
+        });
+         arrow_next.addEventListener("click", function (e) {
+            let active_card = document.getElementsByClassName("active")[0];
+            let idx = parseInt(active_card.id.substring(4));
+            let next_card_idx = idx+1>cards_max_idx? 0: idx+1;
+            let next_card = document.getElementById(`card${next_card_idx}`);
+            {#console.log(idx);#}
+            {#document.getElementById(active_card).classList.remove('active');#}
+            active_card.className += ' goaway';
+            setTimeout(function () {
+                active_card.classList.remove('active');
+                active_card.classList.remove('goaway');
+                next_card.className += ' appear active';
+                setTimeout(function () {
+                    next_card.classList.remove('appear');
+                }, 2000);
+            }, 2000);
+
+            {#document.getElementById(`card${idx+1}`).className += ' active';#}
+        });
+
+    })
+</script>
 </body>
 </html>
